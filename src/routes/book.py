@@ -23,3 +23,10 @@ async def add_new_book(book: BookIn):
                                   page_count=book.page_count)
     last_record_id = conn.execute(query).lastrowid
     return {**book.dict(), "id": last_record_id}
+
+
+@router.delete("/detele-book/{book_id}")
+async def delete_book(book_id: int):
+    query = books.delete().where(books.c.id == book_id)
+    conn.execute(query)
+    return {"data": f"Deleted book {book_id}."}
