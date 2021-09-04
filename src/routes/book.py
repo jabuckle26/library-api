@@ -30,3 +30,15 @@ async def delete_book(book_id: int):
     query = books.delete().where(books.c.id == book_id)
     conn.execute(query)
     return {"data": f"Deleted book {book_id}."}
+
+
+@router.put("/update-book/{book_id}")
+async def update_book(book_id: int, book_details: Book):
+    query = books.update().where(books.c.id == book_id).values(
+        id=book_id,
+        title=book_details.title,
+        author=book_details.author,
+        page_count=book_details.page_count
+    )
+    conn.execute(query)
+    return book_details
