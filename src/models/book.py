@@ -7,5 +7,6 @@ books = Table(
     meta,
     Column('id', Integer, primary_key=True),
     Column('title', String(255)),
-    Column('author', String(255))
+    Column('author', String(255)),
+    Column('page_count', Integer)
 )

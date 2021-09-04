@@ -10,5 +10,5 @@ app.include_router(book.router)
 
 
 if __name__ == "__main__":
-    load_dotenv()
-    uvicorn.run("app:app", port=int(os.getenv('PORT')), reload=True)
+    uvicorn.run("app:app", port=int(os.getenv('PORT')),
+                reload=True, debug=True)
