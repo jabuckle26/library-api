@@ -16,6 +16,17 @@ async def get_all_book_genres():
     return conn.execute(book_genres.select()).fetchall()
 
 
+@router.get("/get-book-genre/{book_genre_id}", response_model=BookGenre)
+async def get_book_genre(book_genre_id: int):
+    query = book_genres.select().where(book_genre_id == book_genres.c.id)
+    returned_book_genre = conn.execute(query)
+
+    if returned_book_genre is None:
+        return {"data": f"No genre found with id {book_genre_id}."}
+    else:
+        return returned_book_genre.fetchone()
+
+
 @router.post("/add-book-genre", response_model=BookGenre)
 async def add_new_genre(book_genre: BookGenreIn):
     query = book_genres.insert().values(name=book_genre.name)
