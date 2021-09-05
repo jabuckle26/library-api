@@ -7,5 +7,4 @@ class BookGenre(BaseModel):
 
 
 class BookGenreIn(BaseModel):
-    id: str
     name: str
