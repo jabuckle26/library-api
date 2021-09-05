@@ -16,13 +16,25 @@ async def get_all_books():
     return conn.execute(books.select()).fetchall()
 
 
+@router.get("/get-book/{book_id}", response_model=Book)
+async def get_book(book_id: int):
+    query = books.select().where(book_id == books.c.id)
+    returned_book = conn.execute(query)
+
+    if returned_book is None:
+        return {"data": f"No genre found with id {book_id}."}
+    else:
+        return returned_book.fetchone()
+
+
 @router.post("/add-book", response_model=Book)
-async def add_new_book(book: BookIn):
-    query = books.insert().values(title=book.title,
-                                  author=book.author,
-                                  page_count=book.page_count)
+async def add_new_book(book_details: BookIn):
+    query = books.insert().values(title=book_details.title,
+                                  author=book_details.author,
+                                  page_count=book_details.page_count,
+                                  book_genre=book_details.book_genre)
     last_record_id = conn.execute(query).lastrowid
-    return {**book.dict(), "id": last_record_id}
+    return {**book_details.dict(), "id": last_record_id}
 
 
 @router.delete("/detele-book/{book_id}")
@@ -38,7 +50,8 @@ async def update_book(book_id: int, book_details: Book):
         id=book_id,
         title=book_details.title,
         author=book_details.author,
-        page_count=book_details.page_count
+        page_count=book_details.page_count,
+        book_genre=book_details.book_genre
     )
     conn.execute(query)
     return book_details
