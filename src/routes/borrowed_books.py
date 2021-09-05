@@ -56,8 +56,8 @@ async def update_borrowed_books(borrowed_books_id: int, borrowed_books_details: 
         member_id=borrowed_books_details.member_id,
         withdraw_date=borrowed_books_details.withdraw_date,
         due_date=borrowed_books_details.due_date,
-        is_overdue=borrowed_books_details.is_overdue,
-        is_returned=borrowed_books_details.is_returned,
+        is_overdue=1 if borrowed_books_details.is_overdue else 0,
+        is_returned=1 if borrowed_books_details.is_returned else 0,
         returned_date=borrowed_books_details.returned_date
     )
     conn.execute(query)
