@@ -8,7 +8,6 @@ class BorrowedBooks(BaseModel):
     member_id: int
     withdraw_date: datetime
     due_date: datetime
-    is_overdue: bool
     is_returned: bool
     returned_date: datetime
 
@@ -18,6 +17,5 @@ class BorrowedBooksIn(BaseModel):
     member_id: int
     withdraw_date: datetime
     due_date: datetime
-    is_overdue: bool
     is_returned: bool
     returned_date: datetime

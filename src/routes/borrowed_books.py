@@ -33,7 +33,6 @@ async def add_new_borrowed_books(borrowed_books_details: BorrowedBooksIn):
                                            member_id=borrowed_books_details.member_id,
                                            withdraw_date=borrowed_books_details.withdraw_date,
                                            due_date=borrowed_books_details.due_date,
-                                           is_overdue=borrowed_books_details.is_overdue,
                                            is_returned=borrowed_books_details.is_returned,
                                            returned_date=borrowed_books_details.returned_date
                                            )
@@ -62,7 +61,6 @@ async def update_borrowed_books(borrowed_books_id: int, borrowed_books_details: 
             member_id=borrowed_books_details.member_id,
             withdraw_date=borrowed_books_details.withdraw_date,
             due_date=borrowed_books_details.due_date,
-            is_overdue=borrowed_books_details.is_overdue,
             is_returned=borrowed_books_details.is_returned,
             returned_date=borrowed_books_details.returned_date
         )

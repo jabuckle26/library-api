@@ -10,7 +10,6 @@ borrowed_books = Table(
     Column('member_id', Integer, ForeignKey("member.id")),
     Column('withdraw_date', DateTime),
     Column('due_date', DateTime),
-    Column('is_overdue', Boolean),
     Column('is_returned', Boolean),
     Column('returned_date', DateTime)
 )
