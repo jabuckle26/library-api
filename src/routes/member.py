@@ -1,5 +1,5 @@
 from config.db import conn
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from models.member import members
 from schemas.member import Member, MemberIn
 from typing import List
@@ -45,11 +45,17 @@ async def delete_member(member_id: int):
 
 @router.put("/update-member/{member_id}")
 async def update_member(member_id: int, member_details: Member):
-    query = members.update().where(members.c.id == member_id).values(
-        id=member_id,
-        first_name=member_details.first_name,
-        last_name=member_details.last_name,
-        email=member_details.email
-    )
-    conn.execute(query)
-    return member_details
+    query = members.select().where(members.c.id == member_id)
+    returned_members = conn.execute(query)
+
+    if returned_members is None:
+        raise HTTPException(status_code=404, detail=f"Book id #{member_id} not found")
+    else:
+        query = members.update().where(members.c.id == member_id).values(
+            id=member_id,
+            first_name=member_details.first_name,
+            last_name=member_details.last_name,
+            email=member_details.email
+        )
+        conn.execute(query)
+        return member_details

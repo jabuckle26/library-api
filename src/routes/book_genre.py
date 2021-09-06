@@ -1,5 +1,5 @@
 from config.db import conn
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from models.book_genre import book_genres
 from schemas.book_genre import BookGenre, BookGenreIn
 from typing import List
@@ -19,10 +19,11 @@ async def get_all_book_genres():
 @router.get("/get-book-genre/{book_genre_id}", response_model=BookGenre)
 async def get_book_genre(book_genre_id: int):
     query = book_genres.select().where(book_genre_id == book_genres.c.id)
-    returned_book_genre = conn.execute(query)
+    queried_book_genre = conn.execute(query)
+    returned_book_genre = queried_book_genre.fetchone()
 
     if returned_book_genre is None:
-        return {"data": f"No genre found with id {book_genre_id}."}
+        raise HTTPException(status_code=404, detail=f"Book id #{book_genre_id} not found")
     else:
         return returned_book_genre.fetchone()
 
@@ -43,9 +44,15 @@ async def delete_book_genre(book_genre_id: int):
 
 @router.put("/update-book-genre/{book_genre_id}")
 async def update_book(book_genre_id: int, book_genre_details: BookGenre):
-    query = book_genres.update().where(book_genres.c.id == book_genre_id).values(
-        id=book_genre_id,
-        name=book_genre_details.name
-    )
-    conn.execute(query)
-    return book_genre_details
+    query = book_genres.select().where(book_genres.c.id == book_genre_id)
+    returned_book_genre = conn.execute(query)
+
+    if returned_book_genre.fetchone() is None:
+        raise HTTPException(status_code=404, detail=f"Book id #{book_genre_id} not found")
+    else:
+        query = book_genres.update().where(book_genres.c.id == book_genre_id).values(
+            id=book_genre_id,
+            name=book_genre_details.name
+        )
+        conn.execute(query)
+        return book_genre_details
