@@ -12,10 +12,10 @@ router = APIRouter(
 
 
 @router.get("/", response_model=List[Book])
-async def get_all_books(search_term: Optional[str] = None):
-    if search_term:
-        print(f'Got.....{search_term}')
-        query = books.select().filter(books.c.title.contains(search_term))
+async def get_all_books(title: Optional[str] = None):
+    if title:
+        print(f'Got.....{title}')
+        query = books.select().filter(books.c.title.contains(title))
         queried_book = conn.execute(query)
         returned_books = queried_book.fetchall()
 
