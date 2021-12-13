@@ -2,7 +2,7 @@ from config.db import conn
 from fastapi import APIRouter, HTTPException
 from models.book import books
 from schemas.book import Book, BookIn
-from typing import List
+from typing import List, Optional
 
 router = APIRouter(
     prefix="/books",
@@ -12,8 +12,19 @@ router = APIRouter(
 
 
 @router.get("/", response_model=List[Book])
-async def get_all_books():
-    return conn.execute(books.select()).fetchall()
+async def get_all_books(search_term: Optional[str] = None):
+    if search_term:
+        print(f'Got.....{search_term}')
+        query = books.select().filter(books.c.title.contains(search_term))
+        queried_book = conn.execute(query)
+        returned_books = queried_book.fetchall()
+
+        if len(returned_books) == 0:
+            raise HTTPException(status_code=404, detail=f"No books found matching query.")
+        else:
+            return returned_books
+    else:
+        return conn.execute(books.select()).fetchall()
 
 
 @router.get("/get-book/{book_id}", response_model=Book)
